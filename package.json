@@ -1,0 +1,32 @@
+{
+  "name": "song-dash",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chart.js": "^2.9.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pbkdf2": "^3.0.17",
+    "pg": "^7.17.0",
+    "sequelize": "^5.21.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JDGrillo/song-dash.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JDGrillo/song-dash/issues"
+  },
+  "homepage": "https://github.com/JDGrillo/song-dash#readme"
+}
