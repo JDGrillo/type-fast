@@ -3,6 +3,7 @@ const models = require('./models');
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const authRoutes = require('./routes/auth-routes')
+const passportSetup = require('./config/passport-setup')
 require('dotenv').config();
 
 const app = express();
