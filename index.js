@@ -3,17 +3,31 @@ const models = require('./models');
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const authRoutes = require('./routes/auth-routes')
+const profileRoutes = require('./routes/profile-routes')
 const passportSetup = require('./config/passport-setup')
+const cookieSession = require('cookie-session')
+const passport = require('passport')
 require('dotenv').config();
 
 const app = express();
 
 app.set('view engine', 'ejs');
 
+app.use(cookieSession({
+  maxAge: 12 * 60 * 60 * 1000,
+  keys: [process.env.COOKIE_KEY]
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use('/auth', authRoutes);
+app.use('/profile', profileRoutes);
 
 app.get('/', (request, response) =>{
-  response.render('home')
+  response.render('home', {
+    user: request.user
+  })
 });
 
 // app.get('/login', (request, response) =>{
