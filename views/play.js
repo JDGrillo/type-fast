@@ -1,3 +1,4 @@
+/*
 const fs = require('fs')
 
 module.exports = function getRandomLine(){
@@ -7,3 +8,9 @@ module.exports = function getRandomLine(){
       document.querySelector("word").innerHTML = (lines[Math.floor(Math.random()*lines.length)]);
    })
   }
+*/
+module.exports = {
+  sayHi() {
+    console.log("hello")
+  }
+}

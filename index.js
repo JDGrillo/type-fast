@@ -8,6 +8,7 @@ const profileRoutes = require('./routes/profile-routes')
 const passportSetup = require('./config/passport-setup')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
+const scripts = require('./javascripts/play')
 const ejs = require('ejs')
 const fs = require('fs')
 require('dotenv').config();
@@ -20,6 +21,10 @@ app.locals.getRandomLine = function(){
     let lines = data.split('\n');
     console.log(lines[Math.floor(Math.random()*lines.length)]);
  })
+}
+
+app.locals.pickWord = function(data) {
+  return data[Math.floor(Math.random() * 100)]
 }
 
 app.use(express.static(__dirname + 'javascripts'))
