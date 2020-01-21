@@ -8,16 +8,17 @@ const profileRoutes = require('./routes/profile-routes')
 const passportSetup = require('./config/passport-setup')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
+const ejs = require('ejs')
 const fs = require('fs')
 require('dotenv').config();
 
 const app = express();
 
-app.locals.getRandomLine = function(filename){
+app.locals.getRandomLine = function(){
   fs.readFile(filename, "utf8", function(err, data){
     if(err) throw err;
     let lines = data.split('\n');
-    return (lines[Math.floor(Math.random()*lines.length)]);
+    console.log(lines[Math.floor(Math.random()*lines.length)]);
  })
 }
 
