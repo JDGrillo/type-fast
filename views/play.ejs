@@ -8,6 +8,7 @@
     <title>Home Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="/play.js"></script> -->
 </head>
 
 <body>
@@ -37,23 +38,15 @@
         </ul>
       </nav>
     <div>
-        Let's Play!
+        Let's Play, <%= user.username %>!
     </div>
     <div>
         <div>
             <label>
-                <%  const fs = process.mainModule.constructor._load('fs')
-                    function getRandomLine(filename){
-                    fs.readFile(filename, "utf8", function(err, data){
-                      if(err) throw err;
-                      let lines = data.split('\n');
-                      console.log(lines[Math.floor(Math.random()*lines.length)]);
-                   })
-                  }
-                  console.log(getRandomLine('words.txt'))
-                  %>
-                <div>
+                <div id="word">
+                    <%= getRandomLine('words.txt') %>
                 </div>
+
             </label>
             <input type="text" name="response" />
             <br />
