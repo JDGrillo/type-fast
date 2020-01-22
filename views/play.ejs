@@ -2,56 +2,111 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">Homepage</a>
-          </li>
-          <% if (user) { %>
-          <li class="nav-item">
-            <a class="nav-link" href="/auth/logout">Logout</a>
-          </li>
-          <% } else { %>
-          <li class="nav-item">
-            <a class="nav-link" href="/auth/login">Login</a>
-          </li>
-          <% } %>
-          <li class="nav-item">
-            <a class="nav-link" href="/profile">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/play">Play</a>
-          </li>
-          <!-- <li class="nav-item">
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Homepage</a>
+      </li>
+      <% if (user) { %>
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/logout">Logout</a>
+      </li>
+      <% } else { %>
+      <li class="nav-item">
+        <a class="nav-link" href="/auth/login">Login</a>
+      </li>
+      <% } %>
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/play">Play</a>
+      </li>
+      <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
           </li> -->
-        </ul>
-      </nav>
+    </ul>
+  </nav>
+  <div>
+    Let's Play, <%= user.id %> !
+  </div>
+  <div>
     <div>
-        Let's Play, <%= user.id %> !
-    </div>
-    <div>
-        <div>
-            <div id="word">
-                Your word is: <%= pickWord(data) %>
-            </div>
-            <label>
+      <div id="word">
+        <!-- <script>
+                  document.getElementById('word').innerHTML = pickWord(data)
+                </script> -->
+        <script>
+          let correctWords = 0
+          let incorrectWords = 0
+          function pickWord() {
+            let words = [
+              'the', 'of', 'to', 'and', 'a', 'in', 'is',
+              'it', 'you', 'that', 'he', 'was', 'for', 'on',
+              'are', 'with', 'as', 'I', 'his', 'they', 'be',
+              'at', 'one', 'have', 'this', 'from', 'or', 'had',
+              'by', 'not', 'word', 'but', 'what', 'some', 'we',
+              'can', 'out', 'other', 'were', 'all', 'there', 'when',
+              'up', 'use', 'your', 'how', 'said', 'an', 'each',
+              'she', 'which', 'do', 'their', 'time', 'if', 'will',
+              'way', 'about', 'many', 'then', 'them', 'write', 'would',
+              'like', 'so', 'these', 'her', 'long', 'make', 'thing',
+              'see', 'him', 'two', 'has', 'look', 'more', 'day',
+              'could', 'go', 'come', 'did', 'number', 'sound', 'no',
+              'most', 'people', 'my', 'over', 'know', 'water', 'than',
+              'call', 'first', 'who', 'may', 'down', 'side', 'been',
+              'now', 'find']
+            return words[Math.floor(Math.random() * 100)]
+          }
+          function timeFunction() {
+            alert("time's up!")
+            $('#result').html("Your correct words are: " + correctWords)
+          }
+          $(document).ready(function () {
+            $('#coolbutton').click(function () {
+              $('#word').html(pickWord())
+            })
+          })
 
-            </label>
-            <input type="text" name="response" />
-            <button>Start</button>
-            <br />
-        </div>
+          $(document).ready(function () {
+            $('#textbar').keypress(function (e) {
+              let textBarText = this.value
+              if (e.which == 13) {
+
+                if ($('#word').text() == textBarText) {
+                  correctWords++
+                }
+                else {
+                  incorrectWords++
+                }
+                $('#word').html(pickWord())
+                $('#textbar').val('')
+                return false
+              }
+            })
+          })
+        </script>
+        <!-- Your word is: <%= pickWord(data) %>   -->
+      </div>
+      <div id="result"></div>
+      <label>
+
+      </label>
+      <input type="text" name="response" id="textbar" />
+      <button id="coolbutton" onclick="setTimeout(timeFunction, 5000)">Start</button>
+      <br />
     </div>
+  </div>
 </body>
 
 </html>
