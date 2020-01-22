@@ -5,8 +5,11 @@ router.get('/login', (request, response) => {
     response.render('login', {user: request.user});
 });
 
+router.get('/signup', (request, response) => {
+    response.render('/signup/')
+});
+
 router.get('/logout', (request, response) => {
-    // passport ~
     request.logout();
     response.redirect('/')
 });

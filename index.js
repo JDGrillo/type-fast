@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require('./routes/auth-routes')
 const playRoutes = require('./routes/play-routes')
 const profileRoutes = require('./routes/profile-routes')
+const signupRoutes = require('./routes/signup-routes')
 const passportSetup = require('./config/passport-setup')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
@@ -14,14 +15,6 @@ const fs = require('fs')
 require('dotenv').config();
 
 const app = express();
-
-app.locals.getRandomLine = function(){
-  fs.readFile(filename, "utf8", function(err, data){
-    if(err) throw err;
-    let lines = data.split('\n');
-    console.log(lines[Math.floor(Math.random()*lines.length)]);
- })
-}
 
 app.locals.pickWord = function(data) {
   return data[Math.floor(Math.random() * 100)]
@@ -41,12 +34,17 @@ app.use(passport.session())
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/play', playRoutes)
+app.use('/signup', signupRoutes)
 
-app.get('/', (request, response) =>{
+app.get('/', (request, response) => {
   response.render('home', {
     user: request.user
   })
 });
+
+app.post('/stats', (request, response) => {
+    
+})
 
 // app.get('/login', (request, response) =>{
 //   response.render('login')

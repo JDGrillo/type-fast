@@ -71,6 +71,8 @@
           function timeFunction() {
             alert("time's up!")
             $('#result').html("Your correct words are: " + correctWords)
+            //jquery post to /stats route
+            //words, id
           }
           $(document).ready(function () {
             $('#coolbutton').click(function () {
@@ -96,7 +98,6 @@
             })
           })
         </script>
-        <!-- Your word is: <%= pickWord(data) %>   -->
       </div>
       <div id="result"></div>
       <label>
