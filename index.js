@@ -74,15 +74,20 @@ app.post('/stats', (request, response) => {
 
 app.post('/correctresults', (request, response) => {
     let correct = []
-    let incorrect = []
     models.result.findAll({where: {user_id: request.body.user_id}}).then((results) => {
         results.forEach(function(index){
             correct.push(index.correct_words)
-            incorrect.push(index.incorrect_words)
             console.log(correct)
         })
         response.send(correct)
     })
+})
+
+app.get('/highscores', (request, reponse) => {
+  models.sequelize.query('SELECT user_id, correct_words FROM results ORDER BY correct_words DESC LIMIT 5').then((results) => {
+    //console.log(typeof(results))
+    response.send(results)
+  })
 })
 
 // app.get('/login', (request, response) =>{
