@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Profile Page</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-</head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
 
 <body>
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -34,6 +35,26 @@
       </nav>
     <div>
         Welcome to your profile page <%= user.username %>!
+    </div>
+    <script>
+      let userID = '<%= user.id %>'
+      let userObject = {
+        "user_id": userID
+      }
+      alert(userID)
+      $.ajax({
+              url: '/playresults',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(userObject),
+              //data: userID,
+              success: function(response) {
+                document.getElementById("result").innerHTML = response
+              }
+            })
+    </script>
+    <div id="result">
+
     </div>
 </body>
 

@@ -47,6 +47,7 @@
                   document.getElementById('word').innerHTML = pickWord(data)
                 </script> -->
         <script>
+          let userID = '<%= user.id %>';
           let correctWords = 0
           let incorrectWords = 0
           function pickWord() {
@@ -70,9 +71,26 @@
           }
           function timeFunction() {
             alert("time's up!")
+            let resultData = {
+              "user_id": userID,
+              "correct_words": correctWords,
+              "incorrect_words": incorrectWords,
+              "play_time": 60
+            }
             $('#result').html("Your correct words are: " + correctWords)
+            $.ajax({
+              url: '/stats',
+              type: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(resultData),
+              success: function(response) {
+                console.log("data sent!")
+              }
+            })
             //jquery post to /stats route
             //words, id
+            correctWords = 0
+            incorrectWords = 0
           }
           $(document).ready(function () {
             $('#coolbutton').click(function () {
@@ -83,7 +101,7 @@
           $(document).ready(function () {
             $('#textbar').keypress(function (e) {
               let textBarText = this.value
-              if (e.which == 13) {
+              if (e.which == 32) {
 
                 if ($('#word').text() == textBarText) {
                   correctWords++

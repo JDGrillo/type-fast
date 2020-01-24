@@ -7,18 +7,25 @@ const playRoutes = require('./routes/play-routes')
 const profileRoutes = require('./routes/profile-routes')
 const signupRoutes = require('./routes/signup-routes')
 const passportSetup = require('./config/passport-setup')
+const Sequelize = require('sequelize')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
 const scripts = require('./javascripts/play')
 const ejs = require('ejs')
 const fs = require('fs')
 require('dotenv').config();
+//require('./config/passport-setup')(passport)
+
 
 const app = express();
 
 app.locals.pickWord = function(data) {
   return data[Math.floor(Math.random() * 100)]
 }
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(express.static(__dirname + 'javascripts'))
 app.set('view engine', 'ejs');
@@ -30,6 +37,7 @@ app.use(cookieSession({
 
 app.use(passport.initialize())
 app.use(passport.session())
+
 
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
@@ -43,7 +51,23 @@ app.get('/', (request, response) => {
 });
 
 app.post('/stats', (request, response) => {
-    
+    models.result.create({user_id:request.body.user_id, correct_words:request.body.correct_words, incorrect_words:request.body.incorrect_words, play_time:request.body.play_time}).then(function(result){
+        console.log(result)
+    })
+    response.send(request.body)
+})
+
+app.post('/playresults', (request, response) => {
+    let correct = []
+    let incorrect = []
+    models.result.findAll({where: {user_id: request.body.user_id}}).then((results) => {
+        results.forEach(function(index){
+            correct.push(index.correct_words)
+            incorrect.push(index.incorrect_words)
+            console.log(correct)
+        })
+        response.send(correct)
+    })
 })
 
 // app.get('/login', (request, response) =>{
@@ -51,17 +75,40 @@ app.post('/stats', (request, response) => {
 // });
 
 
-// let pbkdf2 = require('pbkdf2');
-// let salt = process.env.SALT_KEY;
+let pbkdf2 = require('pbkdf2');
+let salt = process.env.SALT_KEY;
 
-// function encryptionPassword(password) {
-//   let key = pbkdf2.pbkdf2Sync(
-//     password, salt, 36000, 256, 'sha256'
-//   );
-//   let hash = key.toString('hex');
+function encryptionPassword(password) {
+  let key = pbkdf2.pbkdf2Sync(
+    password, salt, 36000, 256, 'sha256'
+  );
+  let hash = key.toString('hex');
 
-//   return hash;
-// }
+  return hash;
+}
+
+
+// passport.use(new LocalStrategy(
+//     function (username, password, done) {
+//         console.log(username)
+//         models.user.findOne({
+//             where: {
+//                 username: username
+//             }
+//         }).then(function (user) {
+//             if (!user) {
+//                 return done(null, false);
+//             }
+
+//             if (user.password != encryptionPassword(password)) {
+//                 return done(null, false);
+//             }
+//             return done(null, user);
+//         }).catch(function (err) {
+//             return done(err);
+//         });
+//     }
+// ));
 
 // app.use(session({
 //   secret: process.env.SECRET, 
@@ -99,40 +146,40 @@ app.post('/stats', (request, response) => {
 
 // app.get('/error', (req, res) => res.send("error logging in"));
 
-// passport.serializeUser(function (user, cb) {
-//   cb(null, user.id);
-// });
+passport.serializeUser(function (user, cb) {
+  cb(null, user.id);
+});
 
-// passport.deserializeUser(function (id, cb) {
-//   models.user.findOne({ where: { id: id } }).then(function (user) {
-//     cb(null, user);
-//   });
-// });
+passport.deserializeUser(function (id, cb) {
+  models.user.findOne({ where: { id: id } }).then(function (user) {
+    cb(null, user);
+  });
+});
 
 // /* PASSPORT LOCAL AUTHENTICATION */
 
 // const LocalStrategy = require('passport-local').Strategy;
 
-// passport.use(new LocalStrategy(
-//   function (username, password, done) {
-//     models.user.findOne({
-//       where: {
-//         username: username
-//       }
-//     }).then(function (user) {
-//       if (!user) {
-//         return done(null, false);
-//       }
+passport.use(new LocalStrategy(
+  function (username, password, done) {
+    models.user.findOne({
+      where: {
+        username: username
+      }
+    }).then(function (user) {
+      if (!user) {
+        return done(null, false);
+      }
 
-//       if (user.password != encryptionPassword(password)) {
-//         return done(null, false);
-//       }
-//       return done(null, user);
-//     }).catch(function (err) {
-//       return done(err);
-//     });
-//   }
-// ));
+      if (user.password != encryptionPassword(password)) {
+        return done(null, false);
+      }
+      return done(null, user);
+    }).catch(function (err) {
+      return done(err);
+    });
+  }
+));
 
 // app.post('/',
 //   passport.authenticate('local', { failureRedirect: '/error' }),
@@ -141,18 +188,19 @@ app.post('/stats', (request, response) => {
 //   });
 
 
-// app.post("/sign-up", function (req, response) {
-//   models.user.create({ 
-//     name: req.body.name, 
-//     email: req.body.email,
-//     password: encryptionPassword(req.body.password)
-//   })
-//     .then(function (user) {
-//       response.send(user);
-//     });
-// });
+app.post("/signup", passport.authenticate('local', { failureRedirect: '/error' }),
+function (req, response) {
+  models.user.create({ 
+    username: req.body.username, 
+    password: encryptionPassword(req.body.password)
+  })
+    .then(function (user) {
+      response.send(user);
+    });
+});
 
 app.listen(process.env.PORT, function () {
   console.log('server listening on port ' + 
   process.env.PORT + ' app name = ');
 })
+//passport.authenticate('local', { failureRedirect: '/didntwork'})
