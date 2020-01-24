@@ -7,10 +7,13 @@ const playRoutes = require('./routes/play-routes')
 const profileRoutes = require('./routes/profile-routes')
 const signupRoutes = require('./routes/signup-routes')
 const passportSetup = require('./config/passport-setup')
+const initializePassport = require('./config/local-passport-config')
 const Sequelize = require('sequelize')
 const cookieSession = require('cookie-session')
+const flash = require('express-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const bcrypt = require('bcryptjs')
 const scripts = require('./javascripts/play')
 const ejs = require('ejs')
 const fs = require('fs')
@@ -23,6 +26,10 @@ const app = express();
 app.locals.pickWord = function(data) {
   return data[Math.floor(Math.random() * 100)]
 }
+
+initializePassport(passport, 
+  username => users.find(user => user.username === username),
+  id => users.find(user => user.id === id))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -37,6 +44,14 @@ app.use(cookieSession({
 
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUnitialized: false
+}
+))
+
+
 
 
 app.use('/auth', authRoutes);
@@ -57,7 +72,7 @@ app.post('/stats', (request, response) => {
     response.send(request.body)
 })
 
-app.post('/playresults', (request, response) => {
+app.post('/correctresults', (request, response) => {
     let correct = []
     let incorrect = []
     models.result.findAll({where: {user_id: request.body.user_id}}).then((results) => {
@@ -188,19 +203,52 @@ passport.use(new LocalStrategy(
 //   });
 
 
-app.post("/signup", passport.authenticate('local', { failureRedirect: '/error' }),
-function (req, response) {
-  models.user.create({ 
-    username: req.body.username, 
-    password: encryptionPassword(req.body.password)
-  })
-    .then(function (user) {
-      response.send(user);
-    });
-});
+// app.post("/signup", passport.authenticate('local', { failureRedirect: '/error' }),
+// function (req, response) {
+//   models.user.create({ 
+//     username: req.body.username, 
+//     password: encryptionPassword(req.body.password)
+//   })
+//     .then(function (user) {
+//       response.send(user);
+//     });
+// });
+
+app.post('/signup', async (req, res) => {
+  //console.log(req.body)
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    console.log(hashedPassword)
+    models.user.create({ 
+          username: req.body.username, 
+          password: hashedPassword
+        }).then(function (user) {
+                res.send(user);
+              });
+    res.redirect('/login')
+  } catch {
+    res.redirect('/bad')
+  }
+})
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+
+  res.redirect('/login')
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/')
+  }
+  next()
+}
 
 app.listen(process.env.PORT, function () {
   console.log('server listening on port ' + 
   process.env.PORT + ' app name = ');
 })
 //passport.authenticate('local', { failureRedirect: '/didntwork'})
+

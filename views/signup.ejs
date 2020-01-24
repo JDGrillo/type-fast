@@ -15,18 +15,15 @@
           <li class="nav-item active">
             <a class="nav-link" href="/">Homepage</a>
           </li>
-          <% if (user) { %>
           <li class="nav-item">
             <a class="nav-link" href="/auth/logout">Logout</a>
           </li>
-          <% } else { %>
           <li class="nav-item">
             <a class="nav-link" href="/auth/login">Login</a>
           </li>
           <li class="nav-item">
                 <a class="nav-link" href="/auth/login">Signup</a>
           </li>
-          <% } %>
           <li class="nav-item">
             <a class="nav-link" href="/profile">Profile</a>
           </li>
@@ -38,7 +35,7 @@
     <div>
         Signup!
     </div>
-    <form action="/signup" method="post">
+    <form action="/signup" method="POST">
         <div>
           <label>Username:</label>
           <input type="text" name="username" id="username"/>
