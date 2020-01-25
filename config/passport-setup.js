@@ -4,18 +4,6 @@ const LocalStrategy = require('passport-local').Strategy
 const models = require('../models');
 require('dotenv').config();
 
-let pbkdf2 = require('pbkdf2');
-let salt = process.env.SALT_KEY;
-
-function encryptionPassword(password) {
-    let key = pbkdf2.pbkdf2Sync(
-        password, salt, 36000, 256, 'sha256'
-    );
-    let hash = key.toString('hex');
-
-    return hash;
-}
-
 passport.serializeUser((user, done) => {
     done(null, user.id)
 })
@@ -51,11 +39,5 @@ passport.use(new GoogleStrategy({
             })
         }
     })
-    // models.user.create({
-    //     username: profile.displayName,
-    //     googleID: profile.id
-    // }).then((newUser) => {
-    //     console.log('new user created' + newUser)
-    // })
 })
 )

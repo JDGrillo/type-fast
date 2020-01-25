@@ -9,10 +9,6 @@ router.get('/highscorepage', (request, response) => {
     response.render('highscorepage');
 });
 
-router.get('/signup', passport.authenticate('local'), (request, response) => {
-    response.redirect('/profile/', {user: request.user})
-});
-
 router.get('/logout', (request, response) => {
     request.logout();
     response.redirect('/')
@@ -23,8 +19,7 @@ router.get('/google', passport.authenticate('google', {
 }))
 
 router.get('/google/redirect', passport.authenticate('google'), (request, response) => {
-    response.redirect('/profile/')
+    response.redirect('/play/')
 })
-
 
 module.exports = router;
