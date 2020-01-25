@@ -48,8 +48,8 @@
     <div>
       Welcome to your profile page <%= user.username %>!
     </div>
-    <canvas id="myChart"></canvas>
-    <canvas id="myChart2"></canvas>
+    <canvas id="myChart" style="display: block; width: 97%"></canvas>
+    <canvas id="myChart2" style="display: block; width: 97%"></canvas>
     <script>
       let userID = "<%= user.id %>";
       let userObject = {
@@ -61,31 +61,31 @@
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(userObject),
-        //data: userID,
         success: function(response) {
-          //document.getElementById("result").innerHTML = response
           rounds = new Array(response.length)
           
           var ctx = document.getElementById("myChart").getContext("2d");
           var chart = new Chart(ctx, {
             // The type of chart we want to create
-            type: "line",
+            type: "bar",
 
             // The data for our dataset
             data: {
               labels: rounds,
               datasets: [
                 {
-                  label: "Your words per minute!",
-                  backgroundColor: "rgb(102, 153, 255)",
-                  borderColor: "rgb(0, 0, 0)",
+                  label: "Your scores!",
+                  backgroundColor: "rgba(102, 153, 255, 0.9)",
+                  borderColor: "rgbar(0,0,0, 0.9)",
                   data: response
                 }
               ]
             },
 
             // Configuration options go here
-            options: {}
+            options: {
+              responsive: false
+            }
           });
         }
         })
@@ -103,14 +103,14 @@
           var ctx2 = document.getElementById("myChart2").getContext("2d");
           var chart2 = new Chart(ctx2, {
             // The type of chart we want to create
-            type: "line",
+            type: "bar",
 
             // The data for our dataset
             data: {
               labels: rounds,
               datasets: [
                 {
-                  label: "Your incorrect words per minute!",
+                  label: "Your incorrect words!",
                   backgroundColor: "rgb(255, 187, 153)",
                   borderColor: "rgb(0, 0, 0)",
                   data: response
@@ -119,7 +119,9 @@
             },
 
             // Configuration options go here
-            options: {}
+            options: {
+              responsive: false
+            }
           });
         }
       });
