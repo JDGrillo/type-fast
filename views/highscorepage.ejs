@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>High Scores</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">TypeFast</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/auth/logout">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/auth/login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/play">Play</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/highscorepage">High Scores</a>
+        </li>
+        <!-- <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li> -->
+      </ul>
+    </nav>
+    <div class="container">
+      <h2>TypeFast High Scores!</h2>
+      <p>These are the current fastest for TypeFast! - Limited to 5 Spots!</p>
+      <p>Join now to try and get a spot on the leaderboard!!</p>            
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Place</th>
+            <th>Username</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td id="1name"></td>
+            <td id="1score"></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td id="2name"></td>
+            <td id="2score"></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td id="3name"></td>
+            <td id="3score"></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td id="4name"></td>
+            <td id="4score"></td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td id="5name"></td>
+            <td id="5score"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <canvas id="myChart"></canvas>
+    <script>
+      let highScores = $.ajax({
+        url: "/highscores",
+        type: "GET",
+        //data: userID,
+        success: function(response) {
+          document.getElementById("1name").innerHTML = (response[0].username);
+          document.getElementById("1score").innerHTML = (response[0].correct_words);
+          document.getElementById("2name").innerHTML = (response[1].username);
+          document.getElementById("2score").innerHTML = (response[1].correct_words);
+          document.getElementById("3name").innerHTML = (response[2].username);
+          document.getElementById("3score").innerHTML = (response[2].correct_words);
+          document.getElementById("4name").innerHTML = (response[3].username);
+          document.getElementById("4score").innerHTML = (response[3].correct_words);
+          document.getElementById("5name").innerHTML = (response[4].username);
+          document.getElementById("5score").innerHTML = (response[4].correct_words);
+          //alert(JSON.stringify(response[0].username))
+        }
+      });
+    </script>
+    <div id="result"></div>
+  </body>
+</html>

@@ -20,7 +20,7 @@
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="/">Homepage</a>
+          <a class="nav-link" href="/">TypeFast</a>
         </li>
         <% if (user) { %>
         <li class="nav-item">
@@ -34,6 +34,12 @@
         <li class="nav-item">
           <a class="nav-link" href="/profile">Profile</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/play">Play</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/highscorepage">High Scores</a>
+          </li>
         <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
           </li> -->
@@ -43,6 +49,7 @@
       Welcome to your profile page <%= user.username %>!
     </div>
     <canvas id="myChart"></canvas>
+    <canvas id="myChart2"></canvas>
     <script>
       let userID = "<%= user.id %>";
       let userObject = {
@@ -70,8 +77,42 @@
               datasets: [
                 {
                   label: "Your words per minute!",
-                  backgroundColor: "rgb(255, 99, 132)",
-                  borderColor: "rgb(255, 99, 132)",
+                  backgroundColor: "rgb(102, 153, 255)",
+                  borderColor: "rgb(0, 0, 0)",
+                  data: response
+                }
+              ]
+            },
+
+            // Configuration options go here
+            options: {}
+          });
+        }
+        })
+                   
+      let incorrectWords = $.ajax({
+        url: "/incorrectresults",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(userObject),
+        //data: userID,
+        success: function(response) {
+          //document.getElementById("result").innerHTML = response
+          rounds = new Array(response.length)
+          
+          var ctx2 = document.getElementById("myChart2").getContext("2d");
+          var chart2 = new Chart(ctx2, {
+            // The type of chart we want to create
+            type: "line",
+
+            // The data for our dataset
+            data: {
+              labels: rounds,
+              datasets: [
+                {
+                  label: "Your incorrect words per minute!",
+                  backgroundColor: "rgb(255, 187, 153)",
+                  borderColor: "rgb(0, 0, 0)",
                   data: response
                 }
               ]

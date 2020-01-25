@@ -6,6 +6,7 @@ const authRoutes = require('./routes/auth-routes')
 const playRoutes = require('./routes/play-routes')
 const profileRoutes = require('./routes/profile-routes')
 const signupRoutes = require('./routes/signup-routes')
+const highscoresRoutes = require('./routes/highscorepage-routes')
 const passportSetup = require('./config/passport-setup')
 const initializePassport = require('./config/local-passport-config')
 const Sequelize = require('sequelize')
@@ -34,7 +35,8 @@ initializePassport(passport,
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(express.static(__dirname + 'javascripts'))
+//app.use(express.static(__dirname + 'javascripts'))
+app.use(express.static("public"))
 app.set('view engine', 'ejs');
 
 app.use(cookieSession({
@@ -58,6 +60,7 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/play', playRoutes)
 app.use('/signup', signupRoutes)
+app.use('/highscorepage', highscoresRoutes)
 
 app.get('/', (request, response) => {
   response.render('home', {
@@ -83,10 +86,22 @@ app.post('/correctresults', (request, response) => {
     })
 })
 
-app.get('/highscores', (request, reponse) => {
-  models.sequelize.query('SELECT user_id, correct_words FROM results ORDER BY correct_words DESC LIMIT 5').then((results) => {
-    //console.log(typeof(results))
-    response.send(results)
+
+app.post('/incorrectresults', (request, response) => {
+  let incorrect = []
+  models.result.findAll({where: {user_id: request.body.user_id}}).then((results) => {
+      results.forEach(function(index){
+          incorrect.push(index.incorrect_words)
+          console.log(incorrect)
+      })
+      response.send(incorrect)
+  })
+})
+
+app.get('/highscores', (request, response) => {
+  //models.sequelize.query('SELECT results.user_id, results.correct_words, user.username FROM results ORDER BY correct_words DESC LIMIT 5').then((results) => {
+  models.sequelize.query('SELECT results.user_id, results.correct_words, users.username FROM results JOIN users on results.user_id = users.id ORDER BY correct_words DESC LIMIT 5').then((results) => {
+    response.send(results[0])
   })
 })
 
